@@ -170,6 +170,7 @@ void settingsHandler(){
     else if(server.argName(i) == "LcdDebug") settings.LcdDebug = true;
     else if(server.argName(i) == "deepSleep") settings.deepSleep = true;
     else if(server.argName(i) == "deepSleepTime") settings.deepSleepTime = atoi(server.arg(i).c_str());
+    else if(server.argName(i) == "backlight") settings.backlight = atoi(server.arg(i).c_str());
     else if(server.argName(i) == "allowPUT") settings.allowPUT = true;
     else if(server.argName(i) == "autoGET") settings.autoGET = true;
     else if(server.argName(i) == "getInterval") settings.getInterval = atoi(server.arg(i).c_str());
