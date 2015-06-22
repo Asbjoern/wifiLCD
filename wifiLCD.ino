@@ -8,6 +8,7 @@
 #include "debughandler.h"
 
 #define RUNLED 4 //GPIO 4
+#define BACKLIGHT 5 //GPIO 5
 #define BLINKTIME 250 //ms
 #define WDTTIME WDTO_8S //8sec
 #define CONNECTTIMEOUT 20 //x500ms
@@ -32,6 +33,9 @@ void setup()
   lcd_init();
   initConfig();
   debug_init();
+  
+  pinMode(BACKLIGHT,OUTPUT);
+  pinMode(BACKLIGHT,settings.backlight);
   
   if(settings.runLED)
   {

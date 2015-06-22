@@ -14,6 +14,7 @@ struct SettingsStruct settings =
   true,     //LCDdebug
   false,    //DeepSleep
   5000,     //DeepSleep time
+  1024,     //backlight
   true,     //PUT
   false,    //Autoget
   60,       //GET timer

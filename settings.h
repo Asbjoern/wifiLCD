@@ -5,7 +5,7 @@
 #include <inttypes.h>
 #include <EEPROM.h>
 
-#define CONFIG_VERSION "002"
+#define CONFIG_VERSION "003"
 #define CONFIG_START 0
  
 struct SettingsStruct {
@@ -13,20 +13,21 @@ struct SettingsStruct {
   char version[4];
   // The variables of your settings
   bool APmode;
-  char ssid[30];
-  char password[30];
-  char name[30];
+  char ssid[32];
+  char password[32];
+  char name[32];
   bool useWDT;
   bool runLED;
   bool SerDebug;
   bool LcdDebug;
   bool deepSleep;
   uint32_t deepSleepTime;
+  uint16_t backlight;
   bool allowPUT;
   bool autoGET;
   uint16_t getInterval;
-  char host[30];
-  char url[30];
+  char host[32];
+  char url[32];
 };
 
 void initConfig(void);
