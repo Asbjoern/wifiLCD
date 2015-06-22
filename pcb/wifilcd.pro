@@ -1,4 +1,4 @@
-update=Søndag '21en' 21. Juni 2015 'kl.' 15.51.26
+update=22-06-2015 14:13:17
 version=1
 last_client=kicad
 [cvpcb]
@@ -43,7 +43,7 @@ BoardOutlineThickness=0.09999999999999999
 ModuleOutlineThickness=0.15
 [eeschema]
 version=1
-LibDir=../../../KiCad
+LibDir=../../../../KiCad
 [eeschema/libraries]
 LibName1=wifilcd-rescue
 LibName2=fuelpump-rescue
