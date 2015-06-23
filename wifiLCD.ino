@@ -35,7 +35,7 @@ void setup()
   debug_init();
   
   pinMode(BACKLIGHT,OUTPUT);
-  pinMode(BACKLIGHT,settings.backlight);
+  digitalWrite(BACKLIGHT,HIGH);
   
   if(settings.runLED)
   {
@@ -63,6 +63,8 @@ void loop()
   if(settings.useWDT)  
     ESP.wdtFeed();
     
+  analogWrite(BACKLIGHT,settings.backlight);
+  
   if(settings.runLED && millis()>blinkTime)
   {
     blinkTime += BLINKTIME;
@@ -133,7 +135,7 @@ void connectWifi()
   delay(200);
   if(settings.APmode)
   {
-    createAP();
+    createAP(settings.ssid,settings.password);
     return;
   }
   debugPrintln("Scanning Networks...");
@@ -152,7 +154,7 @@ void connectWifi()
   {
     debugPrintln(settings.ssid,RED);
     debugPrintln("Not found!",RED);
-    createAP();
+    createAP("WiFiLCD Recovery",0);
     return;
   }
   debugPrintln("Connecting to:");
@@ -170,6 +172,7 @@ void connectWifi()
   if(cnt >= CONNECTTIMEOUT)
   {
     debugPrintln("Error connecting",RED);
+    createAP("WiFiLCD Recovery",0);
     return;
   }
   
@@ -188,15 +191,18 @@ void connectWifi()
   }
 }
 
-void createAP()
+void createAP(const char*  ssid, const char* password)
 {
   WiFi.disconnect();
   delay(200);
   softAP=true;
   debugPrintln("Creating softAP:");
-  debugPrintln(settings.ssid);
+  debugPrintln(ssid);
   WiFi.mode(WIFI_AP);
-  WiFi.softAP(settings.ssid, settings.password);
+  if(password == 0)
+    WiFi.softAP(ssid);
+  else
+    WiFi.softAP(ssid, password);
  
   debugPrintln("IP address: ");
   char ip[17];
