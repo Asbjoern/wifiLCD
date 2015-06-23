@@ -2,8 +2,11 @@ void server_init() {
   server.on("/", handleRoot);
   server.onNotFound(handleNotFound);
   server.on("/settings", HTTP_POST, settingsHandler);
-  server.on("/img", HTTP_PUT, uploadHandler);
-  server.onFileUpload(handleFileUpload);
+  if(settings.allowPUT)
+  {
+    server.on("/img", HTTP_PUT, uploadHandler);
+    server.onFileUpload(handleFileUpload);
+  }
   server.begin();
   server.client().setTimeout(COMTIMEOUT);
 }
@@ -12,9 +15,9 @@ void handleRoot() {
   byte mac[6];   
   WiFi.macAddress(mac);
   String message = "<html><body>" \
-                     "<h1>WiFi beer tap display</h1>" \
+                     "<h1>WiFi LCD</h1>" \
                      "<table style='width:320px'>" \
-                       "<tr><td>MAC:</td><td>" ;
+                       "<tr><td>MAC:</td><td>";
          for(int i=5;i>=0;i--){
            message += String(mac[i], HEX);
            if(i>0) message += ":";
@@ -58,7 +61,7 @@ void handleRoot() {
          message +=        "></td></tr>";
          message +=         "<tr><td>SSID: </td><td><input type='text' maxlength='31' id='ssid' name='ssid' value='";
          message +=         settings.ssid;
-         message +=         "' style='width:50%'><select name='aplist'  style='width:46%' onchange='transfer(this.value);'>";
+         message +=         "' style='width:50%'><select name='aplist' style='width:46%' onchange=\"transfer(this.value,'ssid');\">";
                     int numSsid = WiFi.scanNetworks();
                     if (numSsid == -1) {
                       message +=  "<option value='0'>No Network</option>";
@@ -72,7 +75,7 @@ void handleRoot() {
                         message +=  "selected";
                       message +=  "</option>";
                     }
-         message +=         "</select> </td></tr>";
+         message +=         "</select></td></tr>";
          message +=         "<tr><td>Password: </td><td><input type='text' maxlength='31' name='password' value='";
          message +=         settings.password;
          message +=         "'> </td></tr>";
@@ -134,19 +137,10 @@ void handleRoot() {
   server.send(200, "text/html", message);
 }
 
-void handleNotFound(){
-  String message = "File Not Found\n\n";
-  message += "URI: ";
-  message += server.uri();
-  message += "\nMethod: ";
-  message += (server.method() == HTTP_GET)?"GET":"POST";
-  message += "\nArguments: ";
-  message += server.args();
-  message += "\n";
-  for (uint8_t i=0; i<server.args(); i++){
-    message += " " + server.argName(i) + ": " + server.arg(i) + "\n";
-  }
-  server.send(404, "text/plain", message);
+void handleNotFound()
+{
+  
+  server.send(404, "text/plain", "File Not Found\n\n");
 }
 
 void settingsHandler(){
@@ -176,70 +170,33 @@ void settingsHandler(){
     else if(server.argName(i) == "getInterval") settings.getInterval = atoi(server.arg(i).c_str());
     else if(server.argName(i) == "getHost") urldecode(settings.host,server.arg(i).c_str());
     else if(server.argName(i) == "getUrl") urldecode(settings.url,server.arg(i).c_str());
-    message += " " + server.argName(i) + ": " + server.arg(i) + "\n";
+   // message += " " + server.argName(i) + ": " + server.arg(i) + "\n";
   }
   saveConfig();
   server.send(200, "text/plain", message);
-  delay(1000);
+  delay(2000);
   ESP.reset();
 }
 
 void uploadHandler()
 {
-  Serial.println("Upload");
   server.sendHeader("Connection", "close");
   server.sendHeader("Access-Control-Allow-Origin", "*");
-  if(settings.allowPUT)
-    server.send(200, "text/plain", "");
-  else
-    server.send(405, "text/plain", ""); //Not Allowed
-  Serial.println("Upload Done");
+  server.send(200, "text/plain", "");
 }
 
 void handleFileUpload(){
   HTTPUpload& upload = server.upload();
   if(upload.status == UPLOAD_FILE_START)
   {
-    Tft.setCol(0, 239);
-    Tft.setPage(0, 319);
-    Tft.sendCMD(0x2c);
-    Serial.print("Upload: START, filename: "); Serial.println(upload.filename);
-    while(!server.client().available())
-      Serial.println(server.client().read());
-    /*Serial.println("Reading BMP file header");
-    if(bmpReadHeader(server.client()))
-    {
-      Serial.print("BMP header accepted. Drawing file");
-      bmpDraw(server.client(),0,0);
-    }
-    else
-      Serial.print("BMP header rejected!!");*/
+    Serial.print("Upload: START, filename: "); Serial.println(upload.filename); 
+    bmpPUTinit();
   } 
   else if(upload.status == UPLOAD_FILE_WRITE)
   {
-    Serial.print('.');//("Upload: WRITE, Bytes: "); Serial.println(upload.currentSize);
-    /*uint16_t p;
-    uint8_t g, b;
-    for(int i=0;i<upload.currentSize;i+=3)
-    {
-      p=upload.buf[i];
-      g=upload.buf[i+1];
-      b=upload.buf[i+2];
-       
-      p >>= 3;
-      p <<= 6;
-  
-      g >>= 2;
-      p |= g;
-      p <<= 5;
-  
-      b >>= 3;
-      p |= b;
-        
-      Tft.sendData(p);
-    }*/
-    
-  } else if(upload.status == UPLOAD_FILE_END){
+    bmpPUT(upload);    
+  } 
+  else if(upload.status == UPLOAD_FILE_END){
     Serial.print("Upload: END, Size: "); Serial.println(upload.totalSize);
   }
 }

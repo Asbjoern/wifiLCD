@@ -5,11 +5,11 @@ struct SettingsStruct settings =
 //Default settings. Will be overwritten if valid values exists in EEPROM
   CONFIG_VERSION,
   false,    //APmode
-  "BeerTapAP",//SSID
+  "WiFiLCD AP",//SSID
   "Password",  //Paswword
-  "beertap",//mDNS name
+  "wifilcd",//mDNS name
   false,    //WDT
-  false,     //RunLED
+  true,     //RunLED
   true,     //SerDebug
   true,     //LCDdebug
   false,    //DeepSleep
