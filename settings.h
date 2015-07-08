@@ -20,6 +20,8 @@ struct SettingsStruct {
   bool runLED;
   bool SerDebug;
   bool LcdDebug;
+  bool TelnetDebug;
+  uint16_t TelnetPort;
   bool deepSleep;
   uint32_t deepSleepTime;
   uint16_t backlight;

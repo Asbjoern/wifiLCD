@@ -104,6 +104,12 @@ void handleRoot() {
          message +=        "<tr><td>LCD Debug: </td><td><input type='checkbox' name='LcdDebug'";
                            if(settings.LcdDebug) message += " checked ";
          message +=        "></td></tr>";
+         message +=        "<tr><td>Telnet Debug: </td><td><input type='checkbox' name='TelnetDebug'";
+                           if(settings.TelnetDebug) message += " checked ";
+         message +=        "></td></tr>";
+         message +=        "<tr><td>Telnet Port: </td><td><input type='number' min=1 max=65535 name='TelnetPort' value='";
+         message +=         settings.TelnetPort;
+         message +=         "'> </td></tr>";
          message +=        "<tr><td>Deep sleep: </td><td><input type='checkbox' name='deepSleep'";
                            if(settings.deepSleep) message += " checked ";
          message +=        "></td></tr>";
@@ -156,6 +162,7 @@ void settingsHandler(){
   settings.runLED = false;
   settings.SerDebug = false;
   settings.LcdDebug = false;
+  settings.TelnetDebug = false;
   settings.deepSleep = false;
   settings.allowPUT = false;
   settings.autoGET = false;
@@ -168,6 +175,8 @@ void settingsHandler(){
     else if(server.argName(i) == "runLED") settings.runLED = true;
     else if(server.argName(i) == "SerDebug") settings.SerDebug = true;
     else if(server.argName(i) == "LcdDebug") settings.LcdDebug = true;
+    else if(server.argName(i) == "TelnetDebug") settings.TelnetDebug = true;
+    else if(server.argName(i) == "TelnetPort") settings.TelnetPort = atoi(server.arg(i).c_str());
     else if(server.argName(i) == "deepSleep") settings.deepSleep = true;
     else if(server.argName(i) == "deepSleepTime") settings.deepSleepTime = atoi(server.arg(i).c_str());
     else if(server.argName(i) == "backlight") settings.backlight = atoi(server.arg(i).c_str());

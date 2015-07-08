@@ -131,6 +131,7 @@ void loop()
        }
     }
   }
+  debug_handleTelnet();
   if (OTA.parsePacket()) {
     IPAddress remote = OTA.remoteIP();
     int cmd  = OTA.parseInt();
