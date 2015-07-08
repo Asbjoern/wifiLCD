@@ -35,18 +35,24 @@ void handleRoot() {
                          "<tr><td>Chip ID:</td><td>";
          message +=      String(ESP.getChipId(),HEX);
          message +=      "</td></tr>"\
-                         "<tr><td>Flash Chip ID:</td><td>";
-         message +=      String(ESP.getFlashChipId(),HEX);
-         message +=      "</td></tr>"\
+                         "<tr><td>CPU clock:</td><td>";
+         message +=      String(ESP.getCpuFreqMHz(),HEX);
+         message +=      "MHz</td></tr>"\
                          "<tr><td>Flash Chip Size:</td><td>";
-         message +=      String(ESP.getFlashChipSize()/1024);
+         message +=      String(ESP.getFlashChipRealSize()/1024);
          message +=      "KB</td></tr>"\
                          "<tr><td>Flash Chip Speed:</td><td>";
          message +=      String(ESP.getFlashChipSpeed()/1000); 
          message +=      "KHz</td></tr>"\
                          "<tr><td>Free Heap:</td><td>";
          message +=      String(ESP.getFreeHeap());
-         message +=      "</td></tr>"\
+         message +=      "B</td></tr>"\
+                         "<tr><td>Sketch size:</td><td>";
+         message +=      String(ESP.getSketchSize()/1024);
+         message +=      "KB</td></tr>"\
+                         "<tr><td>Free Sketch space:</td><td>";
+         message +=      String(ESP.getFreeSketchSpace()/1024);
+         message +=      "KB</td></tr>"\
                          "<tr><td>Uptime:</td><td>";
          message +=      String(millis()/1000/60);
          message +=      " minutes</td></tr>";
@@ -175,7 +181,7 @@ void settingsHandler(){
   saveConfig();
   server.send(200, "text/plain", message);
   delay(2000);
-  ESP.reset();
+  ESP.restart();
 }
 
 void uploadHandler()

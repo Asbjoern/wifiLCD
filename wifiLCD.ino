@@ -16,10 +16,13 @@
 #define CONNECTTIMEOUT 20 //x500ms
 #define COMTIMEOUT 2000 //ms
 
+const uint16_t aport = 8266;
+
 extern struct SettingsStruct settings;
 void bmpDraw(WiFiClient f);
 
 MDNSResponder mdns;
+WiFiUDP OTA;
 
 ESP8266WebServer server(80);
 WiFiClient client;
@@ -50,7 +53,8 @@ void setup()
    ESP.wdtEnable(WDTTIME);
  else
    ESP.wdtDisable();
-  
+
+  OTA.begin(aport);
   server_init();
   debugPrintln("HTTP server started");
   client.setTimeout(COMTIMEOUT);
@@ -224,6 +228,7 @@ void connectWifi()
   debugPrintln(ip);
   if (mdns.begin(settings.name, WiFi.localIP())) 
   {
+    MDNS.addService("arduino", "tcp", aport);
     debugPrintln("mDNS started");
     char name[16];
     sprintf(name,"%s.local",settings.name);
