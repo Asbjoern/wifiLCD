@@ -1,4 +1,4 @@
-update=22-06-2015 14:13:17
+update=Wednesday 01 July 2015 07:52:43
 version=1
 last_client=kicad
 [cvpcb]
@@ -24,8 +24,7 @@ LabSize=60
 [pcbnew]
 version=1
 PageLayoutDescrFile=
-LastNetListRead=wifilcd.net
-UseCmpFile=0
+LastNetListRead=
 PadDrill=1.2
 PadDrillOvalY=1.2
 PadSizeH=1.7
