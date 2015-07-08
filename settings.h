@@ -5,7 +5,7 @@
 #include <inttypes.h>
 #include <EEPROM.h>
 
-#define CONFIG_VERSION "AbC"
+#define CONFIG_VERSION "001"
 #define CONFIG_START 0
  
 struct SettingsStruct {

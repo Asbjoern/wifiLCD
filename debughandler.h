@@ -1,17 +1,13 @@
 #ifndef debughandler_h
 #define debughandler_h
+#include "Adafruit_GFX.h"
+#include "Adafruit_ILI9341.h"
 
-#include <TFTv2.h>
-
-#define LCDFONTSIZE 2
-#define LCDFONTX 6*LCDFONTSIZE
-#define LCDFONTY 10*LCDFONTSIZE
-#define MAXX 240-LCDFONTX
-#define MAXY 320-LCDFONTY
+#define YMAX 310
 
 void debug_init(void);
-void debugPrint(const char*, unsigned int color=WHITE);
-void debugPrintln(const char*, unsigned int color=WHITE);
+void debugPrint(const char*, unsigned int color=ILI9341_WHITE);
+void debugPrintln(const char*, unsigned int color=ILI9341_WHITE);
 
 #endif
 

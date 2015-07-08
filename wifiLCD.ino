@@ -1,9 +1,11 @@
-#include <TFTv2.h>
-#include <SPI.h>
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
 #include <ESP8266mDNS.h>
+#include <WiFiUDP.h>
 #include <EEPROM.h>
+#include "SPI.h"
+#include "Adafruit_GFX.h"
+#include "Adafruit_ILI9341.h"
 #include "settings.h"
 #include "debughandler.h"
 
@@ -87,7 +89,7 @@ void loop()
     client.stop();
     delay(100);
     if (!client.connect(settings.host, 80))
-      debugPrintln("Connection failed",RED);
+      debugPrintln("Connection failed",ILI9341_RED);
     else
     {
        Serial.print("Requesting URL: ");
@@ -103,7 +105,7 @@ void loop()
          bool headerdone = false;
          while(!headerdone)
          {
-          Serial.println(client.readStringUntil('\r'));
+          client.readStringUntil('\r');
           if(client.read() == '\n' && client.read() == '\r' && client.read() == '\n')
                 headerdone=true; 
          }
@@ -120,9 +122,46 @@ void loop()
        }
        else
        {
-         debugPrintln("GET rejected",RED);
+         debugPrintln("GET rejected",ILI9341_RED);
          Serial.println(str);
        }
+    }
+  }
+  if (OTA.parsePacket()) {
+    IPAddress remote = OTA.remoteIP();
+    int cmd  = OTA.parseInt();
+    int port = OTA.parseInt();
+    int size   = OTA.parseInt();
+
+    Serial.print("Update Start: ip:");
+    Serial.print(remote);
+    Serial.printf(", port:%d, size:%d\n", port, size);
+    uint32_t startTime = millis();
+    
+    WiFiUDP::stopAll();
+    
+    if(!Update.begin(size)){
+      Serial.println("Update Begin Error");
+      return;
+    }
+  
+    WiFiClient client;
+    if (client.connect(remote, port)) {
+    
+      Serial.setDebugOutput(true);
+      while(!Update.isFinished()) Update.write(client);
+      Serial.setDebugOutput(false);
+    
+      if(Update.end()){
+        client.println("OK");
+        Serial.printf("Update Success: %u\nRebooting...\n", millis() - startTime);
+        ESP.restart();
+      } else {
+        Update.printError(client);
+        Update.printError(Serial);
+      }
+    } else {
+      Serial.printf("Connect Failed: %u\n", millis() - startTime);
     }
   }
   
@@ -131,6 +170,7 @@ void loop()
 
 void connectWifi()
 {
+  ESP.eraseConfig();
   WiFi.disconnect();
   delay(200);
   if(settings.APmode)
@@ -152,8 +192,8 @@ void connectWifi()
       
   if(!APfound)
   {
-    debugPrintln(settings.ssid,RED);
-    debugPrintln("Not found!",RED);
+    debugPrintln(settings.ssid,ILI9341_RED);
+    debugPrintln("Not found!",ILI9341_RED);
     createAP("WiFiLCD Recovery",0);
     return;
   }
@@ -171,7 +211,7 @@ void connectWifi()
   }
   if(cnt >= CONNECTTIMEOUT)
   {
-    debugPrintln("Error connecting",RED);
+    debugPrintln("Error connecting",ILI9341_RED);
     createAP("WiFiLCD Recovery",0);
     return;
   }

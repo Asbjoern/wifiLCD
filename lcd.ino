@@ -1,3 +1,6 @@
+#define TFT_DC 2
+#define TFT_CS 15
+
 #define BUFFPIXEL       60                      // must be a divisor of 240 
 #define BUFFPIXEL_X3    BUFFPIXEL*3                     // BUFFPIXELx3
 
@@ -5,12 +8,22 @@ uint16_t idx,row,j,n;
 int state;
 uint8_t pxbuffer[BUFFPIXEL_X3];                 // 3 * pixels to buffer
 
+Adafruit_ILI9341 tft = Adafruit_ILI9341(TFT_CS, TFT_DC);
+#define MADCTL_MY  0x80
+#define MADCTL_MX  0x40
+#define MADCTL_MV  0x20
+#define MADCTL_ML  0x10
+#define MADCTL_RGB 0x00
+#define MADCTL_BGR 0x08
+#define MADCTL_MH  0x04
 
 void lcd_init()
 {
-    Tft.TFTinit();
-    Tft.sendCMD(0x36);            //Flip display
-    Tft.WRITE_DATA(0xC8);
+  tft.begin();
+  tft.setRotation(2);
+  tft.fillScreen(ILI9341_BLACK);
+  tft.setCursor(0, 0);
+  tft.setTextWrap(true);
  }
  
 void bmpPUTinit()
@@ -26,7 +39,7 @@ bool bmpPUT(HTTPUpload& upload)
 {
   if(upload.currentSize == 0)
   {
-    debugPrintln("Empty PUT",RED);
+    debugPrintln("Empty PUT",ILI9341_RED);
     state = 0;
     return false;
   }
@@ -69,25 +82,12 @@ void bmpDraw(uint8_t* data,uint32_t size)
               
             uint8_t buffidx = 0;
             int offset_x = j*BUFFPIXEL;
-            
-            unsigned int __color[BUFFPIXEL];
-            
+
             for(int k=0; k<BUFFPIXEL; k++)
             {
-                __color[k] = pxbuffer[buffidx+2]>>3;                        // read
-                __color[k] = __color[k]<<6 | (pxbuffer[buffidx+1]>>2);      // green
-                __color[k] = __color[k]<<5 | (pxbuffer[buffidx+0]>>3);      // blue
-                
-                buffidx += 3;
+               tft.drawPixel(j*BUFFPIXEL+k,row,tft.color565(pxbuffer[buffidx+2],pxbuffer[buffidx+1],pxbuffer[buffidx+0]));
+               buffidx += 3;
             }
-
-            Tft.setCol(offset_x, offset_x+BUFFPIXEL);
-            Tft.setPage(row, row);
-            
-            Tft.sendCMD(0x2c);
-            
-            for(int m=0; m < BUFFPIXEL; m++)
-              Tft.sendData(__color[m]);
         }
         j=0;
     }
@@ -97,6 +97,7 @@ void bmpDraw(WiFiClient f)
 {
     uint32_t time = millis();
 
+    tft.setAddrWindow(0, 0, 239, 319);
     for (int i=319; i>= 0; i--)
     {
         for(j=0; j<(240/BUFFPIXEL); j++)
@@ -111,20 +112,9 @@ void bmpDraw(WiFiClient f)
             
             for(int k=0; k<BUFFPIXEL; k++)
             {
-                __color[k] = pxbuffer[buffidx+2]>>3;                        // read
-                __color[k] = __color[k]<<6 | (pxbuffer[buffidx+1]>>2);      // green
-                __color[k] = __color[k]<<5 | (pxbuffer[buffidx+0]>>3);      // blue
-                
+                tft.drawPixel(j*BUFFPIXEL+k,i,tft.color565(pxbuffer[buffidx+2],pxbuffer[buffidx+1],pxbuffer[buffidx+0]));
                 buffidx += 3;
             }
-
-            Tft.setCol(offset_x, offset_x+BUFFPIXEL);
-            Tft.setPage(i, i);
-          
-            Tft.sendCMD(0x2c);
-            
-            for(int m=0; m < BUFFPIXEL; m++)
-              Tft.sendData(__color[m]);
         }
     }
     
