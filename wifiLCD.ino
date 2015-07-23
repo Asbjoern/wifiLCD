@@ -49,12 +49,13 @@ void setup()
   }
   connectWifi();
 
- if(settings.useWDT) 
-   ESP.wdtEnable(WDTTIME);
- else
-   ESP.wdtDisable();
+  if(settings.useWDT) 
+    ESP.wdtEnable(WDTTIME);
+  else
+    ESP.wdtDisable();
 
-  OTA.begin(aport);
+  if(settings.OTA)
+    OTA.begin(aport);
   server_init();
   debugPrintln("HTTP server started");
   client.setTimeout(COMTIMEOUT);
@@ -132,7 +133,7 @@ void loop()
     }
   }
   debug_handleTelnet();
-  if (OTA.parsePacket()) {
+  if (settings.OTA && OTA.parsePacket()) {
     IPAddress remote = OTA.remoteIP();
     int cmd  = OTA.parseInt();
     int port = OTA.parseInt();

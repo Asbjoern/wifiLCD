@@ -110,6 +110,9 @@ void handleRoot() {
          message +=        "<tr><td>Telnet Port: </td><td><input type='number' min=1 max=65535 name='TelnetPort' value='";
          message +=         settings.TelnetPort;
          message +=         "'> </td></tr>";
+         message +=        "<tr><td>OTA update: </td><td><input type='checkbox' name='OTA'";
+                           if(settings.OTA) message += " checked ";
+         message +=        "></td></tr>";
          message +=        "<tr><td>Deep sleep: </td><td><input type='checkbox' name='deepSleep'";
                            if(settings.deepSleep) message += " checked ";
          message +=        "></td></tr>";
@@ -163,6 +166,7 @@ void settingsHandler(){
   settings.SerDebug = false;
   settings.LcdDebug = false;
   settings.TelnetDebug = false;
+  settings.OTA = false;
   settings.deepSleep = false;
   settings.allowPUT = false;
   settings.autoGET = false;
@@ -177,6 +181,7 @@ void settingsHandler(){
     else if(server.argName(i) == "LcdDebug") settings.LcdDebug = true;
     else if(server.argName(i) == "TelnetDebug") settings.TelnetDebug = true;
     else if(server.argName(i) == "TelnetPort") settings.TelnetPort = atoi(server.arg(i).c_str());
+    else if(server.argName(i) == "OTA") settings.OTA = true;
     else if(server.argName(i) == "deepSleep") settings.deepSleep = true;
     else if(server.argName(i) == "deepSleepTime") settings.deepSleepTime = atoi(server.arg(i).c_str());
     else if(server.argName(i) == "backlight") settings.backlight = atoi(server.arg(i).c_str());

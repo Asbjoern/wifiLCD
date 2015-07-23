@@ -14,6 +14,7 @@ struct SettingsStruct settings =
   true,     //LCDdebug
   true,     //TelnetDebug
   8266,     //TelnetPort
+  true,     //OTA
   false,    //DeepSleep
   5000,     //DeepSleep time
   1024,     //backlight
