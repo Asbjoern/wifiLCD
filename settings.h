@@ -5,8 +5,9 @@
 #include <inttypes.h>
 #include <EEPROM.h>
 
-#define CONFIG_VERSION "001"
+#define CONFIG_VERSION "010"
 #define CONFIG_START 0
+#define FWVERSION "1.10"
  
 struct SettingsStruct {
   // This is for detection if they are your settings
@@ -16,21 +17,14 @@ struct SettingsStruct {
   char ssid[32];
   char password[32];
   char name[32];
-  bool useWDT;
   bool runLED;
   bool SerDebug;
   bool LcdDebug;
-  bool TelnetDebug;
-  uint16_t TelnetPort;
-  bool OTA;
-  bool deepSleep;
-  uint32_t deepSleepTime;
   uint16_t backlight;
   bool allowPUT;
   bool autoGET;
   uint16_t getInterval;
-  char host[32];
-  char url[32];
+  char url[64];
 };
 
 void initConfig(void);

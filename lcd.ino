@@ -96,25 +96,16 @@ void bmpDraw(uint8_t* data,uint32_t size)
 void bmpDraw(WiFiClient f)
 {
     uint32_t time = millis();
-
-    tft.setAddrWindow(0, 0, 239, 319);
     for (int i=319; i>= 0; i--)
     {
-        for(j=0; j<(240/BUFFPIXEL); j++)
+        for(j=0; j<240; j++)
         {
-            for(n=0;n<BUFFPIXEL_X3;n++)
-              pxbuffer[n] = f.read();
-              
-            uint8_t buffidx = 0;
-            int offset_x = j*BUFFPIXEL;
-            
-            unsigned int __color[BUFFPIXEL];
-            
-            for(int k=0; k<BUFFPIXEL; k++)
-            {
-                tft.drawPixel(j*BUFFPIXEL+k,i,tft.color565(pxbuffer[buffidx+2],pxbuffer[buffidx+1],pxbuffer[buffidx+0]));
-                buffidx += 3;
-            }
+          while(f.available() < 3)
+             yield();
+          uint8_t b = f.read();
+          uint8_t g = f.read();
+          uint8_t r = f.read();
+          tft.drawPixel(j,i,tft.color565(r,g,b));
         }
     }
     
@@ -176,6 +167,7 @@ boolean bmpCheckHeader(uint8_t* f)
     read32(f);//vertical resolution
     read32(f);//number of colors
     read32(f);//number of important colors
+    tft.setCursor(0, 0);
     return true;
 }
 
@@ -237,6 +229,7 @@ boolean bmpReadHeader(WiFiClient f)
     read32(f);//vertical resolution
     read32(f);//number of colors
     read32(f);//number of important colors
+    tft.setCursor(0, 0);
     return true;
 }
 

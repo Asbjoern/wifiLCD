@@ -5,24 +5,17 @@ struct SettingsStruct settings =
 //Default settings. Will be overwritten if valid values exists in EEPROM
   CONFIG_VERSION,
   false,    //APmode
-  "WiFiLCD AP",//SSID
+  "SSID",//SSID
   "Password",  //Paswword
   "wifilcd",//mDNS name
-  false,    //WDT
   true,     //RunLED
   true,     //SerDebug
   true,     //LCDdebug
-  true,     //TelnetDebug
-  8266,     //TelnetPort
-  true,     //OTA
-  false,    //DeepSleep
-  5000,     //DeepSleep time
   1024,     //backlight
   true,     //PUT
   false,    //Autoget
   60,       //GET timer
-  "hostname", //GET hostname
-  "/url/file.bmp" //GET URL
+  "http://url.to/file.bmp" //GET URL
 }; 
 
 void initConfig()
