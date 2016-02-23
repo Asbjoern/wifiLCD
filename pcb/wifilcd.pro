@@ -1,4 +1,4 @@
-update=Wednesday 01 July 2015 07:52:43
+update=29-10-2015 09:08:46
 version=1
 last_client=kicad
 [cvpcb]
@@ -8,19 +8,6 @@ NetIExt=net
 EquName1=devcms
 [general]
 version=1
-[schematic_editor]
-version=1
-PageLayoutDescrFile=
-PlotDirectoryName=
-SubpartIdSeparator=0
-SubpartFirstId=65
-NetFmtName=
-SpiceForceRefPrefix=0
-SpiceUseNetNumbers=0
-RptD_X=0
-RptD_Y=100
-RptLab=1
-LabSize=60
 [pcbnew]
 version=1
 PageLayoutDescrFile=
@@ -85,3 +72,13 @@ LibName38=arduino
 LibName39=ipd042p03l3
 LibName40=relay
 LibName41=sensors
+[schematic_editor]
+version=1
+PageLayoutDescrFile=
+PlotDirectoryName=
+SubpartIdSeparator=0
+SubpartFirstId=65
+NetFmtName=
+SpiceForceRefPrefix=0
+SpiceUseNetNumbers=0
+LabSize=60
